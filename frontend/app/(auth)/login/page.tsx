@@ -1,481 +1,165 @@
 "use client";
 
-import React, { useState } from "react";
-import { Form, Input, Button, message, Spin } from "antd";
-import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
-import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
+import { useState } from "react";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import Link from "next/link";
 
-export default function LoginPage() {
-  const [loading, setLoading] = useState(false);
-  const { login, loading: authLoading } = useAuth();
-  const router = useRouter();
-  const [form] = Form.useForm();
+const LoginPage = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
-  // Show loading while checking authentication
-  if (authLoading) {
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#0f172a",
-        }}
-      >
-        <Spin size="large" />
-      </div>
-    );
-  }
-
-  const onFinish = async (values: { username: string; password: string }) => {
-    setLoading(true);
-    try {
-      const result = await login(values.username, values.password);
-
-      // Only redirect if login was successful
-      if (result) {
-        message.success("Login successful!");
-        router.push("/admin");
-      }
-    } catch (error: any) {
-      console.error("Login error:", error);
-      message.error(error.message || "Invalid username or password");
-    } finally {
-      setLoading(false);
-    }
+  const handleSubmit = () => {
+    console.log("Login submitted", { email, password, rememberMe });
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      {/* Background Image with Overlay */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: 0,
-        }}
-      >
-        <Image
-          src="/sign-background.jpg"
-          alt="Background"
-          fill
-          style={{
-            objectFit: "cover",
-            objectPosition: "center",
-          }}
-          priority
-        />
-        {/* Dark overlay for better readability */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.75) 100%)",
-            backdropFilter: "blur(2px)",
-          }}
-        />
-      </div>
+    <div className="flex min-h-screen bg-white font-sans">
+      {/* Left Side: Login Form */}
+      <div className="flex flex-col justify-center w-full px-8 py-12 lg:w-1/2 md:px-24">
+        <div className="max-w-md mx-auto w-full">
+          {/* Logo */}
+          <div className="flex items-center gap-2 mb-8">
+            <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 bg-white rounded-sm rotate-45"></div>
+            </div>
+            <span className="text-2xl font-bold text-gray-900">TBridge</span>
+          </div>
 
-      {/* Animated Floating Elements */}
-      <div
-        style={{
-          position: "absolute",
-          top: "10%",
-          right: "15%",
-          width: 300,
-          height: 300,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%)",
-          filter: "blur(60px)",
-          animation: "float 8s ease-in-out infinite",
-          zIndex: 1,
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          bottom: "15%",
-          left: "10%",
-          width: 350,
-          height: 350,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%)",
-          filter: "blur(70px)",
-          animation: "float 10s ease-in-out infinite reverse",
-          zIndex: 1,
-        }}
-      />
+          <h2 className="text-3xl font-bold text-gray-900">Log in to your Account</h2>
+          <p className="mt-2 text-gray-500">Welcome back! Sign in to your account</p>
 
-      {/* Login Card */}
-      <div
-        style={{
-          position: "relative",
-          zIndex: 2,
-          width: "100%",
-          maxWidth: 480,
-          margin: "0 20px",
-        }}
-      >
-        {/* Glassmorphic Card */}
-        <div
-          style={{
-            background: "rgba(255, 255, 255, 0.08)",
-            backdropFilter: "blur(20px)",
-            borderRadius: 32,
-            padding: "56px 48px",
-            border: "1px solid rgba(255, 255, 255, 0.15)",
-            boxShadow: "0 30px 80px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(0, 0, 0, 0.3)",
-            animation: "slideUp 0.8s ease-out",
-          }}
-        >
-          {/* Logo and Brand */}
-          <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <div
-              style={{
-                display: "inline-block",
-                marginBottom: 24,
-                position: "relative",
-              }}
+          {/* Social Logins */}
+          <div className="flex gap-4 mt-8">
+            {/* Google */}
+            <button
+              onClick={() => console.log("Google login")}
+              className="flex items-center justify-center flex-1 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
-              <div
-                style={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: 24,
-                  overflow: "hidden",
-                  border: "3px solid rgba(255, 255, 255, 0.3)",
-                  boxShadow: "0 12px 40px rgba(102, 126, 234, 0.4), 0 4px 12px rgba(0, 0, 0, 0.2)",
-                  animation: "logoGlow 3s ease-in-out infinite",
-                  background: "rgba(255, 255, 255, 0.1)",
-                }}
-              >
-                <Image
-                  src="/logo.jpeg"
-                  alt="Tourism Manager Logo"
-                  width={100}
-                  height={100}
-                  style={{ objectFit: "cover" }}
+              <img src="https://www.svgrepo.com/show/355037/google.svg" className="w-5 h-5" alt="Google" />
+            </button>
+
+            {/* Apple — inline SVG so it always renders correctly */}
+            <button
+              onClick={() => console.log("Apple login")}
+              className="flex items-center justify-center flex-1 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 814 1000" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-37.5-167.2-111.8C121.5 742 75.3 652.7 75.3 558.4c0-152.6 99.8-233.2 197.8-233.2 63.5 0 116.4 41.8 155.9 41.8 37.8 0 96.8-43.8 166-43.8 24.2 0 108.2 2.2 158.9 92.5zm-209.1-71.4c-20.7 25.6-54.4 45.4-85.8 45.4-4.5 0-9-.6-12.8-1.3-1.3-4.5-1.9-9-1.9-14.1 0-26.2 13.4-53.1 33.5-71.3 26.2-23.1 67.2-39.5 102.5-40.8 1.3 5.1 1.9 10.3 1.9 15.4 0 24.9-10.9 51.8-37.4 66.6z" />
+              </svg>
+            </button>
+
+            {/* Facebook */}
+            <button
+              onClick={() => console.log("Facebook login")}
+              className="flex items-center justify-center flex-1 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <img src="https://www.svgrepo.com/show/512120/facebook-176.svg" className="w-5 h-5" alt="Facebook" />
+            </button>
+          </div>
+
+          <div className="relative flex items-center justify-center my-8">
+            <div className="w-full border-t border-gray-200"></div>
+            <span className="absolute px-3 bg-white text-gray-400 text-sm">or</span>
+          </div>
+
+          {/* Form */}
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 text-gray-300 w-5 h-5" />
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none text-gray-900 placeholder-gray-400"
                 />
               </div>
-              {/* Decorative ring around logo */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: -8,
-                  left: -8,
-                  width: "calc(100% + 16px)",
-                  height: "calc(100% + 16px)",
-                  borderRadius: 28,
-                  border: "2px solid rgba(102, 126, 234, 0.3)",
-                  animation: "rotate 10s linear infinite",
-                }}
-              />
             </div>
 
-            <h1
-              style={{
-                fontSize: 36,
-                fontWeight: 800,
-                margin: 0,
-                color: "white",
-                letterSpacing: "-0.03em",
-                textShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
-                marginBottom: 8,
-              }}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 text-gray-300 w-5 h-5" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none text-gray-900 placeholder-gray-400"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-gray-300 hover:text-gray-500 transition-colors"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 border-gray-300 rounded text-red-500 focus:ring-red-500"
+                />
+                <span className="text-sm text-gray-600">Remember me</span>
+              </label>
+              {/* Forgot Password → app/(auth)/forget-password/page.tsx */}
+              <Link
+                href="/forget-password"
+                className="text-sm font-medium text-red-500 hover:underline"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+
+            <button
+              onClick={handleSubmit}
+              className="w-full py-3 bg-black text-white font-bold rounded-lg hover:bg-gray-800 transition-colors"
             >
-              Tourism Manager
-            </h1>
-            <p
-              style={{
-                color: "rgba(255, 255, 255, 0.75)",
-                fontSize: 16,
-                margin: 0,
-                fontWeight: 400,
-                letterSpacing: "0.02em",
-              }}
-            >
-              Admin Dashboard Portal
-            </p>
+              Log in
+            </button>
           </div>
 
-          {/* Divider */}
-          <div
-            style={{
-              height: 1,
-              background: "linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%)",
-              marginBottom: 32,
-            }}
-          />
-
-          {/* Login Form */}
-          <Form
-            form={form}
-            name="login"
-            onFinish={onFinish}
-            style={{ width: "100%" }}
-            size="large"
-            initialValues={{ username: "", password: "" }}
-          >
-            <Form.Item
-              name="username"
-              rules={[{ required: true, message: "Please enter your username" }]}
-              style={{ marginBottom: 20 }}
-            >
-              <Input
-                prefix={
-                  <UserOutlined
-                    style={{
-                      color: "rgba(255, 255, 255, 0.5)",
-                      fontSize: 18,
-                    }}
-                  />
-                }
-                placeholder="Username"
-                disabled={loading}
-                style={{
-                  height: 56,
-                  borderRadius: 14,
-                  background: "rgba(255, 255, 255, 0.08)",
-                  border: "1px solid rgba(255, 255, 255, 0.15)",
-                  color: "white",
-                  fontSize: 16,
-                  transition: "all 0.3s",
-                }}
-                onFocus={(e) => {
-                  e.target.style.background = "rgba(255, 255, 255, 0.12)";
-                  e.target.style.borderColor = "rgba(102, 126, 234, 0.6)";
-                  e.target.style.boxShadow = "0 0 0 4px rgba(102, 126, 234, 0.15)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.background = "rgba(255, 255, 255, 0.08)";
-                  e.target.style.borderColor = "rgba(255, 255, 255, 0.15)";
-                  e.target.style.boxShadow = "none";
-                }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="password"
-              rules={[{ required: true, message: "Please enter your password" }]}
-              style={{ marginBottom: 28 }}
-            >
-              <Input.Password
-                prefix={
-                  <LockOutlined
-                    style={{
-                      color: "rgba(255, 255, 255, 0.5)",
-                      fontSize: 18,
-                    }}
-                  />
-                }
-                placeholder="Password"
-                disabled={loading}
-                style={{
-                  height: 56,
-                  borderRadius: 14,
-                  background: "rgba(255, 255, 255, 0.08)",
-                  border: "1px solid rgba(255, 255, 255, 0.15)",
-                  color: "white",
-                  fontSize: 16,
-                  transition: "all 0.3s",
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.12)";
-                  e.currentTarget.style.borderColor = "rgba(102, 126, 234, 0.6)";
-                  e.currentTarget.style.boxShadow = "0 0 0 4px rgba(102, 126, 234, 0.15)";
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
-                  e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-              />
-            </Form.Item>
-
-            <Form.Item style={{ marginBottom: 0 }}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={loading}
-                block
-                size="large"
-                icon={<LoginOutlined />}
-                style={{
-                  height: 56,
-                  borderRadius: 14,
-                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                  border: "none",
-                  fontSize: 17,
-                  fontWeight: 700,
-                  letterSpacing: "0.02em",
-                  boxShadow: "0 8px 24px rgba(102, 126, 234, 0.5), 0 4px 8px rgba(0, 0, 0, 0.2)",
-                  transition: "all 0.3s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 12px 32px rgba(102, 126, 234, 0.6), 0 6px 12px rgba(0, 0, 0, 0.3)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 8px 24px rgba(102, 126, 234, 0.5), 0 4px 8px rgba(0, 0, 0, 0.2)";
-                }}
-              >
-                {loading ? "Signing In..." : "Sign In"}
-              </Button>
-            </Form.Item>
-          </Form>
-
-          {/* Footer Info */}
-          <div
-            style={{
-              marginTop: 32,
-              textAlign: "center",
-              padding: "20px",
-              background: "rgba(255, 255, 255, 0.05)",
-              borderRadius: 12,
-              border: "1px solid rgba(255, 255, 255, 0.08)",
-            }}
-          >
-            <p
-              style={{
-                color: "rgba(255, 255, 255, 0.6)",
-                fontSize: 14,
-                margin: 0,
-                lineHeight: 1.6,
-              }}
-            >
-              Default credentials:{" "}
-              <span
-                style={{
-                  color: "rgba(255, 255, 255, 0.95)",
-                  fontWeight: 600,
-                  fontFamily: "monospace",
-                  padding: "2px 8px",
-                  background: "rgba(255, 255, 255, 0.1)",
-                  borderRadius: 6,
-                }}
-              >
-                admin
-              </span>{" "}
-              /{" "}
-              <span
-                style={{
-                  color: "rgba(255, 255, 255, 0.95)",
-                  fontWeight: 600,
-                  fontFamily: "monospace",
-                  padding: "2px 8px",
-                  background: "rgba(255, 255, 255, 0.1)",
-                  borderRadius: 6,
-                }}
-              >
-                adminpassword
-              </span>
-            </p>
-          </div>
+          <p className="mt-8 text-center text-sm text-gray-600">
+            Don't have an account?{" "}
+            {/* Sign Up → app/(auth)/register/page.tsx */}
+            <Link href="/register" className="text-red-500 font-bold hover:underline">
+              Sign Up
+            </Link>
+          </p>
         </div>
       </div>
 
-      {/* Global Animations */}
-      <style jsx global>{`
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0) scale(1);
-          }
-          50% {
-            transform: translateY(-30px) scale(1.05);
-          }
-        }
-
-        @keyframes slideUp {
-          0% {
-            opacity: 0;
-            transform: translateY(40px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes logoGlow {
-          0%,
-          100% {
-            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4),
-              0 4px 12px rgba(0, 0, 0, 0.2);
-          }
-          50% {
-            box-shadow: 0 12px 50px rgba(102, 126, 234, 0.6),
-              0 8px 20px rgba(118, 75, 162, 0.4);
-          }
-        }
-
-        @keyframes rotate {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-
-        /* Custom input styles for dark theme */
-        .ant-input,
-        .ant-input-password input {
-          color: white !important;
-        }
-
-        .ant-input::placeholder,
-        .ant-input-password input::placeholder {
-          color: rgba(255, 255, 255, 0.4) !important;
-        }
-
-        .ant-input-password-icon {
-          color: rgba(255, 255, 255, 0.5) !important;
-        }
-
-        .ant-input-password-icon:hover {
-          color: rgba(255, 255, 255, 0.8) !important;
-        }
-
-        /* Scrollbar styling for dark theme */
-        ::-webkit-scrollbar {
-          width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-          background: rgba(0, 0, 0, 0.2);
-        }
-
-        ::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.3);
-          border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.5);
-        }
-      `}</style>
+      {/* Right Side: Image */}
+      <div className="hidden lg:block lg:w-1/2 relative p-4">
+        <div className="w-full h-full rounded-3xl overflow-hidden relative">
+          <img
+            src="https://media.gettyimages.com/id/550859245/photo/sri-lanka-sigiriya-lion-rock-fortress.jpg?s=612x612&w=0&k=20&c=2nzws_GI6jLWYzWJ7QvmoaPu24UCohZyD3cB490_H3k="
+            alt="Aerial view"
+            className="w-full h-full object-cover"
+          />
+          {/* Slider Pagination Indicators */}
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2">
+            <div className="w-6 h-1.5 bg-white/50 rounded-full"></div>
+            <div className="w-6 h-1.5 bg-white/50 rounded-full"></div>
+            <div className="w-12 h-1.5 bg-white rounded-full"></div>
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default LoginPage;
